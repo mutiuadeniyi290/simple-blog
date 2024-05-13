@@ -1,0 +1,45 @@
+name: "Deployment Workflow"
+on:
+    push:
+        branches:
+            - master
+jobs:
+    simple_deployment:
+        runs-on: ubuntu-latest
+        steps:
+        - name: "checkout repo"
+          uses: actions/checkout@v2
+
+        # This action is to print random generated object number
+        - name: "Print the github object version number"
+          run: |
+            echo "APP_VERSION=${RANDOM}" >> $GITHUB_ENV
+        
+        - name: "Login to Dockerhub"
+          uses: docker/login-action@v1
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+        - name: "Build the image"
+          run: |
+            echo ${{ env.APP_VERSION }}
+            docker build -t adebisibiola/simple-blog:${{ env.APP_VERSION }} .
+
+        - name: "Push image to Dockerhub"
+          run: |
+            docker push adebisibiola/simple-blog:${{ env.APP_VERSION }}
+
+        ## This action is to send email notification for the randomly generated app version numbers
+        - name: Send email notifications for the latest version of deployment
+          uses: dawidd6/action-send-mail@v3
+          with:
+            username: funkebiola17@gmail.com
+            password: ${{ secrets.EMAIL_PASSWORD }}
+            server_address: smtp.gmail.com
+            server_port: 465
+            secure: true
+            subject: "New Docker Image Version for Deployment 1"
+            to: "funkebiola17@gmail.com"
+            from: "funkebiola17@gmail.com"
+            body: "New image build version: ${{ env.APP_VERSION }}"
