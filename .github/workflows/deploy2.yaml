@@ -24,22 +24,22 @@ jobs:
         - name: "Build the image"
           run: |
             echo ${{ env.APP_VERSION }}
-            docker build -t adebisibiola/simple-blog:${{ env.APP_VERSION }} .
+            docker build -t mutiuadeniyi290/simple-blog:${{ env.APP_VERSION }} .
 
         - name: "Push image to Dockerhub"
           run: |
-            docker push adebisibiola/simple-blog:${{ env.APP_VERSION }}
+            docker push mutiuadeniyi290/simple-blog:${{ env.APP_VERSION }}
 
         ## This action is to send email notification for the randomly generated app version numbers
         - name: Send email notifications for the latest version of deployment
           uses: dawidd6/action-send-mail@v3
           with:
-            username: funkebiola17@gmail.com
+            username: mutiuadeniyi290@yahoo.com
             password: ${{ secrets.EMAIL_PASSWORD }}
             server_address: smtp.gmail.com
             server_port: 465
             secure: true
             subject: "New Docker Images Version for Deployment 1"
-            to: "funkebiola17@gmail.com"
-            from: "funkebiola17@gmail.com"
+            to: "mutiuadeniyi290@yahoo.com"
+            from: "mutiuadeniyi290@yahoo.com"
             body: "New image build version: ${{ env.APP_VERSION }}"
